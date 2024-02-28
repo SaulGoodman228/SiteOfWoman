@@ -1,19 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body>
+{% extends 'base.html'%}
+{% block content %}
 <h1>{{ title }}</h1>
-<p>{{ menu|join:' | ' }}</p>
+
+{% include 'women/includes/nav.html'%}
+
 <ul>
     {% for p in posts %}
 
         {% if p.is_published %}
             <li>
             <h2>{{ p.title }}</h2>
+
             <p>{{ p.content }}</p>
+                    <a href="{%url 'post' p.id%}">Читать пост</a>
                 {%if not forloop.last%}
             <hr>
                 {%endif%}
@@ -23,6 +22,9 @@
 
     {% endfor %}
 </ul>
+{% include 'women/includes/nav.html'%}
 
-</body>
-</html>
+
+{% endblock %}
+
+
