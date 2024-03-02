@@ -32,11 +32,12 @@
 <!-- Sidebar слева -->
 	<td valign="top" class="left-chapters">
 	<ul id="leftchapters">
-		{% get_categories %} <!-- Пользовательский тег из файла women_tags -->
-		<li class="selected">Все категории</li>
-		<li><a href="#">Актрисы</a></li>
-		<li><a href="#">Певицы</a></li>
-		<li><a href="#">Спортсменки</a></li>
+		<!--{% get_categories as categories%} Пользовательский тег из файла women_tags -->
+
+
+		{% show_categories cat_selected %} <!--Включающий тег из файла women_tags где используется html документ указанный в функции -->
+		<!-- дополнительно передаеи переменную cat_selected --->
+
 		<li class="share">
 		<p>Наш канал</p>
 		<a class="share-yt" href="https://www.youtube.com/@Zhmil3133" target="_blank" rel="nofollow"></a>

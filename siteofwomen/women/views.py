@@ -19,22 +19,23 @@ data_db = [
 ]
 
 cats_db = [
+    {'id': 0, 'name': 'Все категории'},
     {'id': 1, 'name': 'Актрисы'},
     {'id': 2, 'name': 'Певицы'},
     {'id': 3, 'name': 'Спортсменки'},
 ]
 
 
-def main_paige(request):
-
-    data={  'title':'Главная страница',
-            'menu':menu,
-            'posts':data_db,
-          }
-    return render(request,'women/index.html',data)
 
 def index(request): #HttpRequest
-    return HttpResponse("Леди Гага")
+    data = {'title': 'Главная страница',
+            'menu': menu,
+            'posts': data_db,
+            'cat_selected': 0,
+            }
+    return render(request, 'women/index.html', data)
+
+
 def about(request):
     return render(request,'women/about.html',{'title':'О сайте','menu':menu})
 
@@ -55,6 +56,15 @@ def cautegories_by_slug(request,cat_slug):
         print(request.GET)
 
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>slug: {cat_slug}</p>")
+
+def show_category(request, cat_id):
+    data = {'title': 'Главная страница',
+            'menu': menu,
+            'posts': data_db,
+            'cat_selected': cat_id,
+            }
+    return render(request, 'women/index.html', context=data)
+
 
 def page_not_found(request,exception):
     return HttpResponseNotFound('<h1>Страница не найдена<h1>')
