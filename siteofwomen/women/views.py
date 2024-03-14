@@ -1,6 +1,8 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
+
+from women.models import Women
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Добавить статью", 'url_name': 'add_page'},
@@ -28,6 +30,7 @@ cats_db = [
 
 
 def index(request): #HttpRequest
+
     data = {'title': 'Главная страница',
             'menu': menu,
             'posts': data_db,
@@ -48,8 +51,13 @@ def archive(request,year):
     else:
         return redirect('home',permanent=True)
 
-def show_post(request,post_id):
-    return HttpResponse(f'<h1>Айди поста: {post_id}</h1>')
+def show_post(request,post_slug):
+    post=get_object_or_404(Women, slug=post_slug)
+    data = {'title': post.title,
+            'menu': menu,
+            'post': post,
+            'cat_selected': 1}
+    return render(request,'women/post.html',data)
 
 def cautegories_by_slug(request,cat_slug):
     if request.GET:
@@ -58,9 +66,10 @@ def cautegories_by_slug(request,cat_slug):
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>slug: {cat_slug}</p>")
 
 def show_category(request, cat_id):
+    posts = Women.objects.filter(is_published=1)
     data = {'title': 'Главная страница',
             'menu': menu,
-            'posts': data_db,
+            'posts': posts,
             'cat_selected': cat_id,
             }
     return render(request, 'women/index.html', context=data)
