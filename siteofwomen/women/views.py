@@ -66,7 +66,7 @@ def cautegories_by_slug(request,cat_slug):
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>slug: {cat_slug}</p>")
 
 def show_category(request, cat_id):
-    posts = Women.objects.filter(is_published=1)
+    posts = Women.published.all()
     data = {'title': 'Главная страница',
             'menu': menu,
             'posts': posts,
