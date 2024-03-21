@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
-from women.models import Women
+from women.models import Women, Category
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Добавить статью", 'url_name': 'add_page'},
@@ -20,20 +20,13 @@ data_db = [
 
 ]
 
-cats_db = [
-    {'id': 0, 'name': 'Все категории'},
-    {'id': 1, 'name': 'Актрисы'},
-    {'id': 2, 'name': 'Певицы'},
-    {'id': 3, 'name': 'Спортсменки'},
-]
-
 
 
 def index(request): #HttpRequest
 
     data = {'title': 'Главная страница',
             'menu': menu,
-            'posts': data_db,
+            'posts': Women.published.all(),
             'cat_selected': 0,
             }
     return render(request, 'women/index.html', data)
@@ -65,12 +58,13 @@ def cautegories_by_slug(request,cat_slug):
 
     return HttpResponse(f"<h1>Статьи по категориям</h1><p>slug: {cat_slug}</p>")
 
-def show_category(request, cat_id):
-    posts = Women.published.all()
-    data = {'title': 'Главная страница',
+def show_category(request, cat_slug):
+    category = get_object_or_404(Category,slug=cat_slug)
+    posts =Women.published.filter(cat_id=category.pk)
+    data = {'title': f'Рубрика {category.name}',
             'menu': menu,
             'posts': posts,
-            'cat_selected': cat_id,
+            'cat_selected': category.pk,
             }
     return render(request, 'women/index.html', context=data)
 
