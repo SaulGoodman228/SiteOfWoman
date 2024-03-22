@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 
-from women.models import Women, Category
+from women.models import Women, Category, TagPost
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Добавить статью", 'url_name': 'add_page'},
@@ -71,6 +71,17 @@ def show_category(request, cat_slug):
 
 def page_not_found(request,exception):
     return HttpResponseNotFound('<h1>Страница не найдена<h1>')
+
+def show_tag_postlist(request,tag_slug):
+    tag=get_object_or_404(TagPost, slug=tag_slug)
+    posts= tag.tags.filter(is_published=Women.Status.PUBLISHED)
+    data={
+        'title':f'Tag: {tag.tag}',
+        'menu':menu,
+        'posts': posts,
+        'cat_selected':None
+    }
+    return render(request, 'women/index.html', context=data)
 
 def add_page(request):
     return HttpResponse("Добавление статьи")

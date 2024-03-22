@@ -20,14 +20,17 @@ class Women(models.Model):
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(choices=Status.choices, default=True)
-    cat = models.ForeignKey('Category',on_delete=models.PROTECT,related_name='posts')
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='posts')
+    tags = models.ManyToManyField('TagPost', blank=True, related_name='tags')
 
     def __str__(self):
         return self.title
+
     # Отвечает за отображение в опред Виде
 
     objects = models.Manager()
     published = PublishedManager()
+
     # Контекстный менеджер
 
     class Meta:
@@ -51,3 +54,16 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'cat_slug': self.slug})
+
+
+
+
+class TagPost(models.Model):
+    tag = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True)
+
+    def __str__(self):
+        return self.tag
+
+    def get_absolute_url(self):
+        return reverse('tag', kwargs={'tag_slug': self.slug})

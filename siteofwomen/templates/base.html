@@ -33,8 +33,11 @@
 	<td valign="top" class="left-chapters">
 
 	<ul id="leftchapters">
-
-
+		{% if cat_selected == 0 %}
+		<li class="selected">Все категории</li>
+		{% else %}
+		<li><a href="{% url 'home' %}">Все категории</a></li>
+		{%  endif %}
 
 		{% show_categories cat_selected %} <!--Включающий тег из файла women_tags где используется html документ указанный в функции -->
 		<!-- дополнительно передаеи переменную cat_selected --->
@@ -43,6 +46,9 @@
 		<p>Наш канал</p>
 		<a class="share-yt" href="https://www.youtube.com/@Zhmil3133" target="_blank" rel="nofollow"></a>
 		</li>
+
+		<li>{% show_all_tags %}</li>
+
 	</ul>
 </td>
 <!-- Конец Sidebar'а -->
