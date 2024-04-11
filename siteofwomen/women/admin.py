@@ -32,7 +32,7 @@ class WomenAdmin(admin.ModelAdmin):
     #указание сортировки полей только для админ панели
     ordering = ['time_create']
     list_editable = ('is_published','cat')
-    list_per_page = 5
+    list_per_page = 10
     #Добавление пользовательских действий в список
     actions=('set_published','set_draft')
     #позволяет проводить поиск по выбранным полям

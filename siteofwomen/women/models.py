@@ -1,6 +1,22 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
+from django.utils.deconstruct import deconstructible
+
+#Собственный валидатор
+@deconstructible
+class RussianValidator:
+    ALLOWED_CHARS = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщьыъэюя0123456789- '
+    code='russian'
+    def __init__(self,message=None):
+        self.message=message if message else 'Должны присутствовать только русские символы, дефис и пробел'
+    def __call__(self,value, *args, **kwargs):
+        if not (set(value) == set(self.ALLOWED_CHARS)):
+            raise ValidationError(self.message,code=self.code)
+
+
 
 
 class PublishedManager(models.Manager):
@@ -23,8 +39,11 @@ class Women(models.Model):
         DRAFT = 0, 'Черновик'
         PUBLISHED = 1, 'Опубликованно'
 
-    title = models.CharField(max_length=255, verbose_name='Заголовок')
-    slug = models.SlugField(max_length=255, unique=True, db_index=True)
+    title = models.CharField(max_length=255, verbose_name='Заголовок',validators=[RussianValidator()])
+    slug = models.SlugField(max_length=255, unique=True, db_index=True,
+                            validators=[
+                                        MinLengthValidator(5,message='Минимум 5 символов'),
+                                        MaxLengthValidator(100)])
     content = models.TextField(blank=True)
     time_create = models.DateTimeField(auto_now_add=True)
     time_update = models.DateTimeField(auto_now=True)
@@ -95,3 +114,6 @@ class Husband(models.Model):
 
     def __str__(self):
         return self.name
+
+class UploadFiles(models.Model):
+    file = models.FileField(upload_to='uploads_model')
