@@ -1,4 +1,6 @@
 from django.contrib import admin, messages
+from django.utils.safestring import mark_safe
+
 from .models import Women, Category
 
 # Register your models here.
@@ -27,8 +29,9 @@ class MarriedFilter(admin.SimpleListFilter):
 @admin.register(Women)
 class WomenAdmin(admin.ModelAdmin):
     #отображение нужных полей
-    list_display = ('title','time_create','is_published','cat', 'brief_info')
+    list_display = ('title','post_photo','time_create','is_published','cat')
     list_display_links = ('title',)
+    readonly_fields = ['post_photo']
     #указание сортировки полей только для админ панели
     ordering = ['time_create']
     list_editable = ('is_published','cat')
@@ -40,13 +43,14 @@ class WomenAdmin(admin.ModelAdmin):
     #Добавление полей фильтрации
     list_filter = [MarriedFilter,'cat__name','is_published']
     #поля отоброжаемые в форме для редактирования
-    fields = ['title','content','slug','cat','husband']
+    fields = ['title','content','photo','post_photo','slug','cat','husband']
     # exclude делает то же только наоборот readonly_fields - делает поля нередактируемыми
 
     #автоматически транслитирует поле по другому полю
     prepopulated_fields = {'slug':('title',)}
 
     #filter_horizontal = ['tags']
+
 
 
 
@@ -66,6 +70,12 @@ class WomenAdmin(admin.ModelAdmin):
         count = queryset.update(is_published=Women.Status.DRAFT)
         self.message_user(request, f'{count} записей снято с публикации!', messages.WARNING)
 
+    @admin.display(description='Фото',ordering='content')
+    def post_photo(self, women:Women):
+        if women.photo:
+            return mark_safe(f"<img src='{women.photo.url}' width=50>")
+        else:
+            return 'без фото'
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')

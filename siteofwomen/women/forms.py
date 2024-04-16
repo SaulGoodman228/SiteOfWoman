@@ -9,7 +9,7 @@ from .models import Category, Husband, RussianValidator, Women
 class AddPostForm(forms.ModelForm):
     class Meta:
         model = Women
-        fields = ['title', 'slug', 'content', 'is_published', 'cat', 'husband', 'tags']
+        fields = ['title', 'slug','photo', 'content', 'is_published', 'cat', 'husband', 'tags']
         widgets={
             'title':forms.TextInput(attrs={'class':'form-input'}),
             'content':forms.Textarea(attrs={'cols':50,'rows':5}),
@@ -18,6 +18,7 @@ class AddPostForm(forms.ModelForm):
 
     cat = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label='Категория не выбранна',
                                   label='Категория')
+
     husband = forms.ModelChoiceField(queryset=Husband.objects.all(), empty_label='Не замужем', label='Муж',
                                      required=False)
 
