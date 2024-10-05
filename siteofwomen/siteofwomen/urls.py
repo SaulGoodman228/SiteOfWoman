@@ -27,6 +27,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('women.urls')), # Первый аргумент добляется как суффикс ко всем url из women
     path('__dbug__/',include("debug_toolbar.urls")),
+    path('users/',include('users.urls', namespace='users')),
+    path('social-auth/',include('social_django.urls',namespace='social'))
 ]
 
 if settings.DEBUG:

@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-
+import django
+from django.utils.encoding import smart_str
+django.utils.encoding.smart_text = smart_str
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-^5^$@z^a4h$tr_$73h+5+%fv)^__k4*qr(mm!o)j*+j2zguxp8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','siteofwomen.ru']
 INTERNAL_IPS = ['127.0.0.1']
 
 
@@ -42,6 +44,9 @@ INSTALLED_APPS = [
     "django_extensions",
     "women.apps.WomenConfig",
     'debug_toolbar',
+    'users',
+    'social_django',
+
 ]
 
 MIDDLEWARE = [
@@ -68,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'users.context_processors.get_women_context',
             ],
         },
     },
@@ -133,3 +139,23 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL='users:login'
+
+AUTHENTICATION_BACKENDS=[
+    'social_core.backends.github.GithubOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+    'users.authentication.EmailAuthBackend',
+
+
+]
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+AUTH_USER_MODEL = 'users.User'
+DEFAULT_USER_IMAGE = MEDIA_URL + "users/default.png"
+
+SOCIAL_AUTH_GITHUB_KEY = 'Ov23liGaHsVtHwByJUy2'
+SOCIAL_AUTH_GITHUB_SECRET = '4e55e3b066332cf4e7db5e6200c651e4d7421e77'
